@@ -1,0 +1,73 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'application'
+}
+
+group 'vn.codegym'
+version '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Servlet API (Tomcat 9)
+    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'javax.servlet:jstl:1.2'
+
+    // Validation API + Hibernate Validator
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
+
+    // JDBC + JPA + Hibernate
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.springframework.data:spring-data-jpa:2.7.10'
+    implementation 'org.springframework:spring-orm:5.3.32'
+    implementation 'org.hibernate:hibernate-core:5.6.15.Final'
+
+    // Thymeleaf Template Engine
+    implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
+    implementation 'org.thymeleaf:thymeleaf-spring5:3.1.1.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.1.0.RELEASE'
+
+    // Spring MVC
+    implementation 'org.springframework:spring-webmvc:5.3.32'
+
+    // Spring Security
+    implementation 'org.springframework.security:spring-security-web:5.8.5'
+    implementation 'org.springframework.security:spring-security-config:5.8.5'
+    implementation 'org.springframework.security:spring-security-taglibs:5.8.5'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+}
+
+war {
+    archiveFileName = 'FreelanceWorkHub.war'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}

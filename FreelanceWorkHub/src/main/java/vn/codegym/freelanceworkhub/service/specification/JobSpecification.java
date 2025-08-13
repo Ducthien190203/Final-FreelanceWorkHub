@@ -1,0 +1,54 @@
+package vn.codegym.freelanceworkhub.service.specification;
+
+import org.springframework.data.jpa.domain.Specification;
+import vn.codegym.freelanceworkhub.model.Job;
+import vn.codegym.freelanceworkhub.model.JobCategory;
+import vn.codegym.freelanceworkhub.model.EmployerProfile; // Keep for potential future use or reference
+import vn.codegym.freelanceworkhub.model.User; // Keep for potential future use or reference
+
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+
+public class JobSpecification {
+
+    public static Specification<Job> hasKeyword(String keyword) {
+        return (root, query, criteriaBuilder) -> {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            String likePattern = "%" + keyword.toLowerCase().trim() + "%";
+            return criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), likePattern)
+            );
+        };
+    }
+
+    public static Specification<Job> hasCategory(String category) {
+        return (root, query, criteriaBuilder) -> {
+            if (category == null || category.trim().isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.equal(root.get("category"), category);
+        };
+    }
+
+    // Note: Implementing hasLocation requires a direct mapping from User to EmployerProfile
+    // in the User entity, or a more complex subquery/join strategy.
+    // For now, this method will return a conjunction (no filter).
+    public static Specification<Job> hasLocation(String location) {
+        return (root, query, criteriaBuilder) -> {
+            if (location == null || location.trim().isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            // Placeholder for future implementation
+            return criteriaBuilder.conjunction();
+        };
+    }
+
+    public static Specification<Job> isNotClosed() {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.notEqual(root.get("status"), Job.JobStatus.CLOSED);
+        };
+    }
+}

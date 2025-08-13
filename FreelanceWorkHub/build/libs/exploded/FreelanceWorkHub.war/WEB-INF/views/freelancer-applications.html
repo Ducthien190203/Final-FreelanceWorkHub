@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.title}">FreelanceWorkHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- 1. Chèn Header trực tiếp -->
+    <header th:replace="~{header :: main-header}"></header>
+
+    <!-- 2. Main Content (Nội dung chính của trang) -->
+    <main class="container py-5 flex-grow-1">
+        <h2>My Applications</h2>
+        <div th:if="${applications != null and !applications.isEmpty()}">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="app : ${applications}">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a th:href="@{/jobs/${app.job.id}}" th:text="${app.job.title}"></a>
+                            <div class="text-muted small" th:text="${#dates.format(app.createdAt,'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div><span class="badge bg-secondary" th:text="${app.status}"></span></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${applications == null or applications.isEmpty()}">
+            <div class="alert alert-info">You haven't applied to any jobs yet.</div>
+        </div>
+    </main>
+
+    <!-- 3. Chèn Footer trực tiếp -->
+    <footer th:replace="~{footer :: main-footer}"></footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Job Details</h1>
+    <div th:if="${job}">
+        <div class="card">
+            <div class="card-header">
+                <h2 th:text="${job.title}">Job Title</h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Category:</strong> <span th:text="${job.category}">Category</span></p>
+                <p><strong>Employer:</strong> <span th:text="${job.employer.name}">Employer Name</span></p>
+                <p><strong>Description:</strong> <span th:text="${job.description}">Job Description</span></p>
+                <p><strong>Skills:</strong> <span th:text="${job.skills}">Skills Required</span></p>
+                <p><strong>Experience Level:</strong> <span th:text="${job.experienceLevel}">Experience Level</span></p>
+                <p><strong>Location Type:</strong> <span th:text="${job.locationType}">Location Type</span></p>
+                <p><strong>Location Address:</strong> <span th:text="${job.locationAddress}">Location Address</span></p>
+                <p><strong>Payment Type:</strong> <span th:text="${job.paymentType}">Payment Type</span></p>
+                <p><strong>Min Rate:</strong> <span th:text="${job.minRate}">Min Rate</span></p>
+                <p><strong>Max Rate:</strong> <span th:text="${job.maxRate}">Max Rate</span></p>
+                <p><strong>Posted Date:</strong> <span th:text="${#dates.format(job.postedDate, 'dd-MM-yyyy HH:mm')}">Posted Date</span></p>
+                <p><strong>Status:</strong> <span th:text="${job.status}">Status</span></p>
+
+                <!-- Add more job details as needed -->
+
+                <a th:href="@{/jobs}" class="btn btn-primary">Back to Job List</a>
+            </div>
+        </div>
+    </div>
+    <div th:unless="${job}">
+        <p class="alert alert-warning">Job not found.</p>
+        <a th:href="@{/jobs}" class="btn btn-primary">Back to Job List</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+package vn.codegym.freelanceworkhub.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import vn.codegym.freelanceworkhub.dto.EmployerProfileDto;
+import vn.codegym.freelanceworkhub.model.EmployerProfile;
+import vn.codegym.freelanceworkhub.model.User;
+import vn.codegym.freelanceworkhub.service.EmployerProfileService;
+import vn.codegym.freelanceworkhub.service.UserService;
+
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
+import vn.codegym.freelanceworkhub.model.Job;
+import vn.codegym.freelanceworkhub.service.IJobService;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/employer")
+public class EmployerController {
+
+    private final UserService userService;
+    private final EmployerProfileService employerProfileService;
+    private final IJobService jobService;
+
+    @GetMapping("/dashboard")
+    public String employerDashboard() {
+        return "dashboard-employer";
+    }
+
+    @GetMapping("/company-profile")
+    public String showEmployerCompanyProfile(Model model, Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        Long userId = user.getId();
+
+        EmployerProfile profile = employerProfileService.findByUserId(userId);
+        if (profile == null) {
+            profile = new EmployerProfile();
+            profile.setUser(user);
+        }
+        model.addAttribute("profile", profile);
+        model.addAttribute("user", user);
+        return "employer-company-profile";
+    }
+
+    @PostMapping("/company-profile")
+    public String updateEmployer(@Valid @ModelAttribute("profile") EmployerProfileDto dto,
+                                 BindingResult result,
+                                 @RequestParam("name") String name,
+                                 Principal principal,
+                                 Model model) {
+        System.out.println("EmployerController: Entering updateEmployer method.");
+        System.out.println("EmployerController: DTO received: " + dto);
+        System.out.println("EmployerController: Name received: " + name);
+
+        if (result.hasErrors()) {
+            System.out.println("EmployerController: Validation errors found: " + result.getAllErrors());
+            User user = userService.findByEmail(principal.getName());
+            model.addAttribute("user", user);
+            return "employer-company-profile";
+        }
+        System.out.println("EmployerController: No validation errors.");
+
+        User user = userService.findByEmail(principal.getName());
+        Long userId = user.getId();
+
+        System.out.println("EmployerController: Updating user name to: " + name);
+        user.setName(name);
+        userService.save(user);
+        System.out.println("EmployerController: User name updated.");
+
+        System.out.println("EmployerController: Calling employerProfileService.createOrUpdate.");
+        employerProfileService.createOrUpdate(userId, dto);
+        System.out.println("EmployerController: employerProfileService.createOrUpdate completed.");
+
+        return "redirect:/employer/company-profile";
+    }
+
+    @GetMapping("/job-list")
+    public String listEmployerJobs(Principal principal, Model model) {
+        User user = userService.findByEmail(principal.getName());
+        List<Job> employerJobs = jobService.findByEmployer(user.getId());
+        model.addAttribute("employerJobs", employerJobs);
+        return "employer-job-list";
+    }
+}

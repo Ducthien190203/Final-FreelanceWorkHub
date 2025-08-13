@@ -1,0 +1,39 @@
+body {
+    font-family: 'Inter', sans-serif; /* Sử dụng font hiện đại hơn nếu có thể */
+}
+
+/* Card danh mục */
+.category-card {
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+/* How it works */
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #0d6efd; /* Màu xanh của Bootstrap */
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.role-card {
+    cursor: pointer;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.role-card:hover {
+    border-color: #0d6efd !important;
+}
+.role-card.selected-role {
+    border-color: #0d6efd !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}

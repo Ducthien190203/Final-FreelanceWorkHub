@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="main-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid mx-4">
+            <!-- 1. Logo (Bên trái) -->
+            <a class="navbar-brand fw-bold" th:href="@{/}">
+                <img src="..." alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                FreelanceWorkHub
+            </a>
+
+            <!-- 2. Menu chính (Ở giữa) -->
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/}"><i class="bi bi-house-door-fill me-2"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/jobs}"><i class="bi bi-search me-2"></i>Find Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/about}"><i class="bi bi-info-circle-fill me-2"></i>About Us</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 3. Nút hành động (Bên phải) -->
+<div class="d-flex align-items-center">
+
+    <a th:href="@{/login}" class="btn btn-link text-decoration-none text-dark me-2">Sign In</a>
+    <a th:href="@{/auth/register}" class="btn btn-primary">Get Started</a>
+
+    <div class="dropdown">
+        <a class="nav-link dropdown-toggle text-dark" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            <span sec:authentication="name">User</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+            <li><a class="dropdown-item" href="#">Hồ sơ của tôi</a></li>
+            <li sec:authorize="hasRole('ROLE_EMPLOYER')"><a class="dropdown-item" th:href="@{/employer/dashboard}">Employer Dashboard</a></li>
+            <li sec:authorize="hasRole('ROLE_FREELANCER')"><a class="dropdown-item" th:href="@{/freelancer/dashboard}">Freelancer Dashboard</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="dropdown-item">Đăng xuất</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+</div>
+        </div>
+    </nav>
+</header>
+</body>
+</html>

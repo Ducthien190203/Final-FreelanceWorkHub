@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.title}">FreelanceWorkHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- 1. Chèn Header trực tiếp -->
+    <header th:replace="~{header :: main-header}"></header>
+
+    <!-- 2. Main Content (Nội dung chính của trang) -->
+    <main class="container my-5 flex-grow-1">
+        <div class="row">
+            <!-- Left Column: Filter Form -->
+            <div class="col-md-3">
+                <div class="card p-3 mb-4">
+                    <h5 class="mb-3">Filter Jobs</h5>
+                    <form th:action="@{/jobs}" method="get">
+                        <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        
+                        <div class="mb-3">
+                            <label for="keyword" class="form-label">Keyword</label>
+                            <input type="text" class="form-control" id="keyword" name="keyword" th:value="${keyword}" placeholder="Title, description...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoryId" class="form-label">Category</label>
+                            <select id="categoryFilter" name="category" class="form-select">
+    <option value="">All Categories</option>
+    <option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}"
+            th:selected="${cat.name == category}"></option>
+</select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" th:value="${location}" placeholder="City, Country...">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Job Listings -->
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Browse Jobs</h2>
+                    <span class="text-muted" th:text="${jobPage.totalElements} + ' jobs found'"></span>
+                    <a class="btn btn-outline-primary" th:href="@{/post-job}"
+                       sec:authorize="hasRole('EMPLOYER')">Post a Job</a>
+                </div>
+
+                <div th:if="${jobPage.isEmpty()}">
+                    <div class="alert alert-info">No jobs found. Try broadening your search.</div>
+                </div>
+
+                <div th:unless="${jobPage.isEmpty()}">
+                    <div class="list-group mb-4">
+                        <div class="list-group-item mb-2" th:each="job : ${jobPage.content}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    <a th:href="@{/jobs/${job.id}}" th:text="${job.title}"></a>
+                                </h5>
+                                <small class="text-muted" th:text="${#dates.format(job.postedDate,'dd/MM/yyyy')}"></small>
+                            </div>
+                            <p class="mb-1">
+                                <span class="badge bg-secondary" th:text="${job.category}"></span>
+                                <span class="text-muted"> by <span th:text="${job.employer.name}"></span></span>
+                            </p>
+                            <p class="mb-1 text-truncate" th:text="${#strings.abbreviate(job.description, 150)}"></p>
+                            <small class="text-success fw-bold" th:text="${job.budget != null ? #numbers.formatDecimal(job.budget,1,'COMMA',2,'POINT') + ' $' : 'Negotiable'}"></small>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${jobPage.hasPrevious ? '' : 'disabled'}">
+                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number - 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}">Previous</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, jobPage.totalPages - 1)}" th:classappend="${i == jobPage.number ? 'active' : ''}">
+                                <a class="page-link" th:href="@{/jobs(page=${i}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${jobPage.hasNext ? '' : 'disabled'}">
+                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number + 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 3. Chèn Footer trực tiếp -->
+    <footer th:replace="~{footer :: main-footer}"></footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

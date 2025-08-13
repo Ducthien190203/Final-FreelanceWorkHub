@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.title}">Create New Job</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header th:replace="~{header :: main-header}"></header>
+
+    <main class="container py-5 flex-grow-1">
+        <h2 class="mt-5">Post a New Job</h2>
+        <div th:if="${job != null}">
+            <form th:action="@{/jobs/create}" th:object="${job}" method="post">
+                <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger" role="alert">
+                    <p th:each="err : ${#fields.allErrors()}" th:text="${err}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Job Title</label>
+                    <input type="text" id="title" class="form-control" th:field="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Job Description</label>
+                    <textarea id="description" class="form-control" th:field="*{description}" rows="5" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                </div>
+
+                
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" class="form-select" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''" required>
+                        <option value="">Select a category</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Skills Required (comma-separated)</label>
+                    <textarea id="skills" class="form-control" th:field="*{skills}" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="locationType" class="form-label">Location Type</label>
+                    <select id="locationType" class="form-select" th:field="*{locationType}" required>
+                        <option value="">Select location type</option>
+                        <option value="REMOTE">Remote</option>
+                        <option value="ONSITE">On-site</option>
+                        
+                    </select>
+                </div>
+                <div class="mb-3" id="onSiteAddressGroup" style="display: none;">
+                    <label for="onSiteAddress" class="form-label">On-site Address (City, State/Province)</label>
+                    <input type="text" id="onSiteAddress" class="form-control" th:field="*{onSiteAddress}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="experienceLevel" class="form-label">Experience Level</label>
+                    <select id="experienceLevel" class="form-select" th:field="*{experienceLevel}" required>
+                        <option value="">Select experience level</option>
+                        <option value="ENTRY_LEVEL">Entry-level</option>
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="EXPERT">Expert</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payment Type</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="paymentType" id="hourlyRadio" value="HOURLY" th:field="*{paymentType}" required>
+                            <label class="form-check-label" for="hourlyRadio">Hourly Rate</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="paymentType" id="fixedRadio" value="FIXED" th:field="*{paymentType}" required>
+                            <label class="form-check-label" for="fixedRadio">Fixed Price</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="hourlyBudgetGroup" style="display: none;">
+                    <label for="minBudget" class="form-label">Hourly Rate (Min - Max)</label>
+                    <div class="input-group">
+                        <input type="number" id="minBudget" class="form-control" placeholder="Min" th:field="*{minBudget}">
+                        <span class="input-group-text">-</span>
+                        <input type="number" id="maxBudget" class="form-control" placeholder="Max" th:field="*{maxBudget}">
+                    </div>
+                </div>
+
+                <div class="mb-3" id="fixedBudgetGroup" style="display: none;">
+                    <label for="maxBudgetFixed" class="form-label">Max Budget (Fixed Price)</label>
+                    <input type="number" id="maxBudgetFixed" class="form-control" th:field="*{maxBudget}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Post Job</button>
+            </form>
+        </div>
+    </main>
+
+    <footer th:replace="~{footer :: main-footer}"></footer>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationTypeSelect = document.getElementById('locationType');
+            const onSiteAddressGroup = document.getElementById('onSiteAddressGroup');
+
+            const paymentTypeRadios = document.querySelectorAll('input[name="paymentType"]');
+            const hourlyBudgetGroup = document.getElementById('hourlyBudgetGroup');
+            const fixedBudgetGroup = document.getElementById('fixedBudgetGroup');
+            const minBudgetInput = document.getElementById('minBudget');
+            const maxBudgetInput = document.getElementById('maxBudget');
+            const maxBudgetFixedInput = document.getElementById('maxBudgetFixed');
+
+
+            function toggleLocationAddress() {
+                if (locationTypeSelect.value === 'ONSITE') {
+                    onSiteAddressGroup.style.display = 'block';
+                    onSiteAddressGroup.querySelector('input').setAttribute('required', 'required');
+                } else {
+                    onSiteAddressGroup.style.display = 'none';
+                    onSiteAddressGroup.querySelector('input').removeAttribute('required');
+                    onSiteAddressGroup.querySelector('input').value = ''; // Clear value when hidden
+                }
+            }
+
+            function toggleBudgetFields() {
+                hourlyBudgetGroup.style.display = 'none';
+                fixedBudgetGroup.style.display = 'none';
+                minBudgetInput.removeAttribute('required');
+                maxBudgetInput.removeAttribute('required');
+                maxBudgetFixedInput.removeAttribute('required');
+                minBudgetInput.value = '';
+                maxBudgetInput.value = '';
+                maxBudgetFixedInput.value = '';
+
+
+                if (document.getElementById('hourlyRadio').checked) {
+                    hourlyBudgetGroup.style.display = 'block';
+                    minBudgetInput.setAttribute('required', 'required');
+                    maxBudgetInput.setAttribute('required', 'required');
+                } else if (document.getElementById('fixedRadio').checked) {
+                    fixedBudgetGroup.style.display = 'block';
+                    maxBudgetFixedInput.setAttribute('required', 'required');
+                }
+            }
+
+            locationTypeSelect.addEventListener('change', toggleLocationAddress);
+            paymentTypeRadios.forEach(radio => radio.addEventListener('change', toggleBudgetFields));
+
+            // Initial call to set correct state on page load (e.g., if form is pre-filled)
+            toggleLocationAddress();
+            toggleBudgetFields();
+        });
+    </script>
+</body>
+</html>
