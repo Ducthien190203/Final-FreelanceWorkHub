@@ -10,12 +10,17 @@ import vn.codegym.freelanceworkhub.model.Job;
 import java.util.List;
 
 public interface IJobService {
-    
+
     Job updateJob(JobDto dto);
+
     List<Job> findAll();
+
     Job findById(Long id);
+
     List<Job> findByCategory(String category);
+
     List<Job> findByEmployer(Long employerId);
+
     void deleteById(Long id);
 
     /**
@@ -33,4 +38,6 @@ public interface IJobService {
 
     void closeJob(Long jobId);
 
-    }
+    List<Job> findByEmployerWithApplications(Long employerId);
+}
+

@@ -75,7 +75,7 @@
                         <div class="list-group-item mb-2" th:each="job : ${jobPage.content}">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
-                                    <a th:href="@{/jobs/${job.id}}" th:text="${job.title}"></a>
+                                    <a th:href="@{'/jobs/' + ${job.id}}" th:text="${job.title}"></a>
                                 </h5>
                                 <small class="text-muted" th:text="${#dates.format(job.postedDate,'dd/MM/yyyy')}"></small>
                             </div>

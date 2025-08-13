@@ -10,7 +10,6 @@ import vn.codegym.freelanceworkhub.dto.CategoryStatsDTO;
 import vn.codegym.freelanceworkhub.dto.JobDto;
 import vn.codegym.freelanceworkhub.model.Job;
 import vn.codegym.freelanceworkhub.model.JobCategory;
-import vn.codegym.freelanceworkhub.model.User;
 import vn.codegym.freelanceworkhub.repository.IJobRepository;
 import vn.codegym.freelanceworkhub.repository.JobCategoryRepository;
 import vn.codegym.freelanceworkhub.repository.UserRepository;
@@ -27,7 +26,6 @@ public class JobServiceImpl implements IJobService {
     private final JobCategoryRepository jobCategoryRepository;
     private final UserRepository userRepository;
 
-    
 
     @Override
     public Job updateJob(JobDto dto) {
@@ -50,13 +48,14 @@ public class JobServiceImpl implements IJobService {
 
     @Override
     public Job findById(Long id) {
-        return jobRepository.findById(id).orElse(null);
+        return jobRepository.findByIdWithEmployer(id).orElse(null);
     }
 
     @Override
     public List<Job> findByCategory(String category) {
         return jobRepository.findByCategory(category);
     }
+
 
     @Override
     public List<Job> findByEmployer(Long employerId) {
@@ -81,7 +80,7 @@ public class JobServiceImpl implements IJobService {
     // NEW METHOD FOR PAGINATED SEARCH
     @Override
     public Page<Job> findAll(Specification<Job> spec, Pageable pageable) {
-        return jobRepository.findAll(spec, pageable);
+        return jobRepository.findAllWithEmployer(spec, pageable);
     }
 
     @Override
@@ -97,5 +96,10 @@ public class JobServiceImpl implements IJobService {
         jobRepository.save(job);
     }
 
-    
+    @Override
+    public List<Job> findByEmployerWithApplications(Long employerId) {
+        return jobRepository.findByEmployerIdWithApplications(employerId);
+    }
 }
+
+    

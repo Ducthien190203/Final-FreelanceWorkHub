@@ -18,8 +18,11 @@ import vn.codegym.freelanceworkhub.service.UserService;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 import vn.codegym.freelanceworkhub.model.Job;
+import vn.codegym.freelanceworkhub.model.Application;
 import vn.codegym.freelanceworkhub.service.IJobService;
+import vn.codegym.freelanceworkhub.service.IApplicationService;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class EmployerController {
     private final UserService userService;
     private final EmployerProfileService employerProfileService;
     private final IJobService jobService;
+    private final IApplicationService applicationService;
 
     @GetMapping("/dashboard")
     public String employerDashboard() {
@@ -86,8 +90,24 @@ public class EmployerController {
     @GetMapping("/job-list")
     public String listEmployerJobs(Principal principal, Model model) {
         User user = userService.findByEmail(principal.getName());
-        List<Job> employerJobs = jobService.findByEmployer(user.getId());
+                                                List<Job> employerJobs = jobService.findByEmployerWithApplications(user.getId());
         model.addAttribute("employerJobs", employerJobs);
         return "employer-job-list";
+    }
+
+    @GetMapping("/applicants")
+    public String listApplicants(Principal principal, Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByEmail(principal.getName());
+        if (user == null) {
+            return "redirect:/error";
+        }
+
+        List<Application> allApplications = applicationService.findAllByEmployerId(user.getId());
+        model.addAttribute("allApplications", allApplications);
+        return "employer-applicants";
     }
 }

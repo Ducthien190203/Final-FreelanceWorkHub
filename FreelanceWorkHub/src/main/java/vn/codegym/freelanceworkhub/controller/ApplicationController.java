@@ -1,14 +1,17 @@
 package vn.codegym.freelanceworkhub.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import vn.codegym.freelanceworkhub.dto.ApplicationDto;
-import vn.codegym.freelanceworkhub.service.ApplicationService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import vn.codegym.freelanceworkhub.model.User;
+import vn.codegym.freelanceworkhub.service.IApplicationService;
+import vn.codegym.freelanceworkhub.service.UserService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
@@ -16,31 +19,31 @@ import java.security.Principal;
 @RequestMapping("/applications")
 public class ApplicationController {
 
-    private final ApplicationService applicationService;
-
-    @GetMapping("/job/{jobId}")
-    public String listApplications(@PathVariable Long jobId, Model model) {
-        model.addAttribute("applications", applicationService.findByJob(jobId));
-        return "applications/list";
-    }
-
-    @GetMapping("/apply/{jobId}")
-    public String applyForm(@PathVariable Long jobId, Model model) {
-        ApplicationDto dto = new ApplicationDto();
-        dto.setJobId(jobId);
-        model.addAttribute("application", dto);
-        return "applications/apply";
-    }
+    private final IApplicationService applicationService;
+    private final UserService userService;
 
     @PostMapping("/apply")
-    public String apply(@Valid @ModelAttribute("application") ApplicationDto dto,
-                        BindingResult result,
-                        Principal principal) {
-        if (result.hasErrors()) {
-            return "applications/apply";
+    public String applyForJob(@RequestParam("jobId") Long jobId,
+                              Principal principal,
+                              RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("error", "You must be logged in to apply for a job.");
+            return "redirect:/login";
         }
-        Long freelancerId = Long.valueOf(principal.getName());
-        applicationService.apply(dto, freelancerId);
-        return "redirect:/jobs/" + dto.getJobId();
+
+        User currentUser = userService.findByEmail(principal.getName());
+        if (currentUser == null || !currentUser.getRole().name().equals("FREELANCER")) {
+            redirectAttributes.addFlashAttribute("error", "Only freelancers can apply for jobs.");
+            return "redirect:/jobs/" + jobId; // Redirect back to job detail
+        }
+
+        try {
+            applicationService.applyForJob(jobId, currentUser.getId());
+            redirectAttributes.addFlashAttribute("success", "Application submitted successfully!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/jobs/" + jobId; // Redirect back to job detail
     }
 }
