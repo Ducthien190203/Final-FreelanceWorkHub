@@ -14,6 +14,7 @@ import vn.codegym.freelanceworkhub.repository.IJobRepository;
 import vn.codegym.freelanceworkhub.repository.JobCategoryRepository;
 import vn.codegym.freelanceworkhub.repository.UserRepository;
 import vn.codegym.freelanceworkhub.service.IJobService;
+import vn.codegym.freelanceworkhub.service.IApplicationService;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class JobServiceImpl implements IJobService {
     private final IJobRepository jobRepository;
     private final JobCategoryRepository jobCategoryRepository;
     private final UserRepository userRepository;
+    private final IApplicationService applicationService;
 
 
     @Override
@@ -80,7 +82,7 @@ public class JobServiceImpl implements IJobService {
     // NEW METHOD FOR PAGINATED SEARCH
     @Override
     public Page<Job> findAll(Specification<Job> spec, Pageable pageable) {
-        return jobRepository.findAllWithEmployer(spec, pageable);
+        return jobRepository.findAll(spec, pageable);
     }
 
     @Override
@@ -90,10 +92,18 @@ public class JobServiceImpl implements IJobService {
 
     @Override
     public void closeJob(Long jobId) {
-        Job job = jobRepository.findById(jobId)
+        Job job = jobRepository.findByIdWithApplications(jobId)
                 .orElseThrow(() -> new RuntimeException("Job not found with ID: " + jobId));
         job.setStatus(Job.JobStatus.CLOSED);
         jobRepository.save(job);
+
+        // Update status of associated applications
+        for (vn.codegym.freelanceworkhub.model.Application application : job.getApplications()) {
+            if (application.getStatus() == vn.codegym.freelanceworkhub.model.Application.ApplicationStatus.PENDING) {
+                application.setStatus(vn.codegym.freelanceworkhub.model.Application.ApplicationStatus.REJECTED);
+                applicationService.save(application);
+            }
+        }
     }
 
     @Override

@@ -25,18 +25,19 @@
                 <p th:if="${job.paymentType != 'FIXED'}"><strong>Min Rate:</strong> <span th:text="${job.minRate}">Min Rate</span></p>
                 <p th:if="${job.paymentType != 'FIXED'}"><strong>Max Rate:</strong> <span th:text="${job.maxRate}">Max Rate</span></p>
                 <p><strong>Posted Date:</strong> <span th:text="${#dates.format(job.postedDate, 'dd-MM-yyyy HH:mm')}">Posted Date</span></p>
-                <p><strong>Status:</strong> <span th:text="${job.status}">Status</span></p>
+                <p><strong>Status:</strong> <span th:classappend="${job.status.name() == 'CLOSED' ? 'badge bg-danger' : (job.status.name() == 'PENDING' ? 'badge bg-warning' : 'badge bg-success')}" th:text="${job.status}">Status</span></p>
 
                 <!-- Add more job details as needed -->
 
                 <!-- Apply Button (visible only to FREELANCER role) -->
-                <th:block sec:authorize="hasRole('FREELANCER')">
+                <th:block sec:authorize="hasRole('FREELANCER')" th:if="${job.status.name() != 'CLOSED'}">
                     <form th:action="@{/applications/apply}" method="post" style="display:inline;">
                         <input type="hidden" th:name="jobId" th:value="${job.id}" />
                         <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-success mt-3">Apply for this Job</button>
                     </form>
                 </th:block>
+                <div th:if="${job.status.name() == 'CLOSED'}" class="alert alert-info mt-3">This job is closed and no longer accepting applications.</div>
 
                 <a th:href="@{/jobs}" class="btn btn-primary">Back to Job List</a>
             </div>

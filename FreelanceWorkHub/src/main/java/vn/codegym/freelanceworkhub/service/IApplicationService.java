@@ -16,4 +16,5 @@ public interface IApplicationService {
 
     void acceptApplication(Long applicationId);
     void rejectApplication(Long applicationId);
+    Application save(Application application);
 }

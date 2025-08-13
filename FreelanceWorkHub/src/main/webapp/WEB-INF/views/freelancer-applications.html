@@ -31,7 +31,7 @@
                 <li class="list-group-item" th:each="app : ${applications}">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <a th:href="@{/jobs/${app.job.id}}" th:text="${app.job.title}"></a>
+                            <a th:href="@{'/jobs/' + ${app.job.id}}" th:text="${app.job.title}"></a>
                             <div class="text-muted small" th:text="${#dates.format(app.createdAt,'dd/MM/yyyy')}"></div>
                         </div>
                         <div>

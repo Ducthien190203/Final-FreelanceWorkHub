@@ -13,96 +13,141 @@
     <header th:replace="~{header :: main-header}"></header>
 
     <main class="container py-5 flex-grow-1">
-        <h2 class="mt-5">Post a New Job</h2>
-        <div th:if="${job != null}">
-            <form th:action="@{/jobs/create}" th:object="${job}" method="post">
-                <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger" role="alert">
-                    <p th:each="err : ${#fields.allErrors()}" th:text="${err}"></p>
-                </div>
-
-                <div class="mb-3">
-                    <label for="title" class="form-label">Job Title</label>
-                    <input type="text" id="title" class="form-control" th:field="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" required>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="description" class="form-label">Job Description</label>
-                    <textarea id="description" class="form-control" th:field="*{description}" rows="5" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required></textarea>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
-                </div>
-
-                
-
-                <div class="mb-3">
-                    <label for="category" class="form-label">Category</label>
-                    <select id="category" class="form-select" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''" required>
-                        <option value="">Select a category</option>
-                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                    </select>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="skills" class="form-label">Skills Required (comma-separated)</label>
-                    <textarea id="skills" class="form-control" th:field="*{skills}" rows="3"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="locationType" class="form-label">Location Type</label>
-                    <select id="locationType" class="form-select" th:field="*{locationType}" required>
-                        <option value="">Select location type</option>
-                        <option value="REMOTE">Remote</option>
-                        <option value="ONSITE">On-site</option>
-                        
-                    </select>
-                </div>
-                <div class="mb-3" id="onSiteAddressGroup" style="display: none;">
-                    <label for="onSiteAddress" class="form-label">On-site Address (City, State/Province)</label>
-                    <input type="text" id="onSiteAddress" class="form-control" th:field="*{onSiteAddress}">
-                </div>
-
-                <div class="mb-3">
-                    <label for="experienceLevel" class="form-label">Experience Level</label>
-                    <select id="experienceLevel" class="form-select" th:field="*{experienceLevel}" required>
-                        <option value="">Select experience level</option>
-                        <option value="ENTRY_LEVEL">Entry-level</option>
-                        <option value="INTERMEDIATE">Intermediate</option>
-                        <option value="EXPERT">Expert</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Payment Type</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="paymentType" id="hourlyRadio" value="HOURLY" th:field="*{paymentType}" required>
-                            <label class="form-check-label" for="hourlyRadio">Hourly Rate</label>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4 text-center">Post a New Job</h2>
+                <div th:if="${job != null}">
+                    <form th:action="@{/jobs/create}" th:object="${job}" method="post">
+                        <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger" role="alert">
+                            <p th:each="err : ${#fields.allErrors()}" th:text="${err}"></p>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="paymentType" id="fixedRadio" value="FIXED" th:field="*{paymentType}" required>
-                            <label class="form-check-label" for="fixedRadio">Fixed Price</label>
+
+                        <!-- Job Details Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Job Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Job Title</label>
+                                    <input type="text" id="title" class="form-control" th:field="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" required placeholder="e.g., Senior Full-Stack Developer">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Job Description</label>
+                                    <textarea id="description" class="form-control" th:field="*{description}" rows="5" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required placeholder="Provide a detailed description of the job responsibilities and expectations."></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select id="category" class="form-select" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''" required>
+                                        <option value="">Select a category</option>
+                                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="mb-3" id="hourlyBudgetGroup" style="display: none;">
-                    <label for="minBudget" class="form-label">Hourly Rate (Min - Max)</label>
-                    <div class="input-group">
-                        <input type="number" id="minBudget" class="form-control" placeholder="Min" th:field="*{minBudget}">
-                        <span class="input-group-text">-</span>
-                        <input type="number" id="maxBudget" class="form-control" placeholder="Max" th:field="*{maxBudget}">
-                    </div>
-                </div>
+                        <!-- Requirements Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Requirements & Skills</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="skills" class="form-label">Skills Required (comma-separated)</label>
+                                    <textarea id="skills" class="form-control" th:field="*{skills}" rows="3" placeholder="e.g., Java, Spring Boot, React, SQL"></textarea>
+                                </div>
+                                <!-- New fields for responsibilities and requirements -->
+                                <div class="mb-3">
+                                    <label for="responsibilities" class="form-label">Responsibilities</label>
+                                    <textarea id="responsibilities" class="form-control" th:field="*{responsibilities}" rows="4" placeholder="List key responsibilities for this role."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="requirements" class="form-label">Qualifications & Requirements</label>
+                                    <textarea id="requirements" class="form-control" th:field="*{requirements}" rows="4" placeholder="Outline the necessary qualifications and experience."></textarea>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="mb-3" id="fixedBudgetGroup" style="display: none;">
-                    <label for="maxBudgetFixed" class="form-label">Max Budget (Fixed Price)</label>
-                    <input type="number" id="maxBudgetFixed" class="form-control" th:field="*{maxBudget}">
-                </div>
+                        <!-- Location & Experience Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Location & Experience</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="locationType" class="form-label">Location Type</label>
+                                    <select id="locationType" class="form-select" th:field="*{locationType}" required>
+                                        <option value="">Select location type</option>
+                                        <option value="REMOTE">Remote</option>
+                                        <option value="ONSITE">On-site</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="onSiteAddressGroup" style="display: none;">
+                                    <label for="onSiteAddress" class="form-label">On-site Address (City, State/Province)</label>
+                                    <input type="text" id="onSiteAddress" class="form-control" th:field="*{onSiteAddress}" placeholder="e.g., Ho Chi Minh City, Vietnam">
+                                </div>
 
-                <button type="submit" class="btn btn-primary">Post Job</button>
-            </form>
+                                <div class="mb-3">
+                                    <label for="experienceLevel" class="form-label">Experience Level</label>
+                                    <select id="experienceLevel" class="form-select" th:field="*{experienceLevel}" required>
+                                        <option value="">Select experience level</option>
+                                        <option value="ENTRY_LEVEL">Entry-level</option>
+                                        <option value="INTERMEDIATE">Intermediate</option>
+                                        <option value="EXPERT">Expert</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Payment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Type</label>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="paymentType" id="hourlyRadio" value="HOURLY" th:field="*{paymentType}" required>
+                                            <label class="form-check-label" for="hourlyRadio">Hourly Rate</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="paymentType" id="fixedRadio" value="FIXED" th:field="*{paymentType}" required>
+                                            <label class="form-check-label" for="fixedRadio">Fixed Price</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="hourlyBudgetGroup" style="display: none;">
+                                    <label for="minBudget" class="form-label">Hourly Rate (Min - Max)</label>
+                                    <div class="input-group">
+                                        <input type="number" id="minBudget" class="form-control" placeholder="Min" th:field="*{minBudget}">
+                                        <span class="input-group-text">-</span>
+                                        <input type="number" id="maxBudget" class="form-control" placeholder="Max" th:field="*{maxBudget}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="fixedBudgetGroup" style="display: none;">
+                                    <label for="maxBudgetFixed" class="form-label">Max Budget (Fixed Price)</label>
+                                    <input type="number" id="maxBudgetFixed" class="form-control" th:field="*{maxBudget}" placeholder="e.g., 5000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Post Job</button>
+                            <a th:href="@{/employer/job-list}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </main>
 

@@ -29,6 +29,10 @@
         <p><strong>Email:</strong> <span th:text="${applicant.email}"></span></p>
         <h5>Profile</h5>
         <div th:text="${applicant.freelancerProfile != null ? applicant.freelancerProfile.bio : '—'}"></div>
+        <p><strong>Skills:</strong> <span th:text="${applicant.freelancerProfile != null ? applicant.freelancerProfile.skills : '—'}"></span></p>
+        <p><strong>Location:</strong> <span th:text="${applicant.freelancerProfile != null ? applicant.freelancerProfile.location : '—'}"></span></p>
+        <p><strong>Experience Years:</strong> <span th:text="${applicant.freelancerProfile != null ? applicant.freelancerProfile.experienceYears : '—'}"></span></p>
+        <p><strong>Availability:</strong> <span th:text="${applicant.freelancerProfile != null ? applicant.freelancerProfile.availability : '—'}"></span></p>
     </main>
 
     <!-- 3. Chèn Footer trực tiếp -->

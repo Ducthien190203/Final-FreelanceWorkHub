@@ -48,8 +48,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" class="form-control" id="location" name="location" th:value="${location}" placeholder="City, Country...">
+                            <label for="statusFilter" class="form-label">Status</label>
+                            <select id="statusFilter" name="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="PENDING" th:selected="${status == 'PENDING' or status == null}">Pending</option>
+                                <option value="CLOSED" th:selected="${status == 'CLOSED'}">Closed</option>
+                            </select>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Search</button>
@@ -93,13 +97,13 @@
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${jobPage.hasPrevious ? '' : 'disabled'}">
-                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number - 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}">Previous</a>
+                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number - 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, status=${status}, sort=${sort})}">Previous</a>
                             </li>
                             <li class="page-item" th:each="i : ${#numbers.sequence(0, jobPage.totalPages - 1)}" th:classappend="${i == jobPage.number ? 'active' : ''}">
-                                <a class="page-link" th:href="@{/jobs(page=${i}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}" th:text="${i + 1}"></a>
+                                <a class="page-link" th:href="@{/jobs(page=${i}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, status=${status}, sort=${sort})}" th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${jobPage.hasNext ? '' : 'disabled'}">
-                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number + 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, location=${location}, sort=${sort})}">Next</a>
+                                <a class="page-link" th:href="@{/jobs(page=${jobPage.number + 1}, size=${jobPage.size}, keyword=${keyword}, categoryId=${categoryId}, status=${status}, sort=${sort})}">Next</a>
                             </li>
                         </ul>
                     </nav>

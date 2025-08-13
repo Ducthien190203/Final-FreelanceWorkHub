@@ -29,22 +29,26 @@ public class JobSpecification {
             if (category == null || category.trim().isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("category"), category);
+            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("category")), category.toLowerCase());
         };
     }
 
-    // Note: Implementing hasLocation requires a direct mapping from User to EmployerProfile
-    // in the User entity, or a more complex subquery/join strategy.
-    // For now, this method will return a conjunction (no filter).
-    public static Specification<Job> hasLocation(String location) {
+    public static Specification<Job> hasStatus(String status) {
         return (root, query, criteriaBuilder) -> {
-            if (location == null || location.trim().isEmpty()) {
+            if (status == null || status.trim().isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            // Placeholder for future implementation
-            return criteriaBuilder.conjunction();
+            try {
+                Job.JobStatus jobStatus = Job.JobStatus.valueOf(status.toUpperCase());
+                return criteriaBuilder.equal(root.get("status"), jobStatus);
+            } catch (IllegalArgumentException e) {
+                // Handle invalid status string, e.g., return a predicate that matches nothing
+                return criteriaBuilder.disjunction(); // Always false predicate
+            }
         };
     }
+
+    
 
     public static Specification<Job> isNotClosed() {
         return (root, query, criteriaBuilder) -> {

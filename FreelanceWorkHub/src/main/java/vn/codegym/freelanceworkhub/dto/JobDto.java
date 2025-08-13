@@ -26,6 +26,8 @@ public class JobDto {
     private String status; // PENDING / APPROVED / CLOSED
 
     private String skills;
+    private String responsibilities;
+    private String requirements;
     private String locationType;
     private String onSiteAddress;
     private String experienceLevel;

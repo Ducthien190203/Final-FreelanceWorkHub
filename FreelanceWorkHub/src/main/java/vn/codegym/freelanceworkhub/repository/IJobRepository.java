@@ -1,5 +1,6 @@
 package vn.codegym.freelanceworkhub.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -33,12 +34,16 @@ public interface IJobRepository extends JpaRepository<Job, Long>, JpaSpecificati
     @Query("SELECT j FROM Job j LEFT JOIN FETCH j.applications WHERE j.employer.id = :employerId")
     List<Job> findByEmployerIdWithApplications(@Param("employerId") Long employerId);
 
-    @Query(value = "SELECT j FROM Job j JOIN FETCH j.employer",
-           countQuery = "SELECT count(j) FROM Job j")
-    Page<Job> findAllWithEmployer(Specification<Job> spec, Pageable pageable);
+    
 
     @Query("SELECT j FROM Job j JOIN FETCH j.employer WHERE j.id = :id")
     Optional<Job> findByIdWithEmployer(@Param("id") Long id);
+
+    @Query("SELECT j FROM Job j LEFT JOIN FETCH j.applications WHERE j.id = :id")
+    Optional<Job> findByIdWithApplications(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = "employer")
+    Page<Job> findAll(Specification<Job> spec, Pageable pageable);
 
     @Query("SELECT j FROM Job j JOIN FETCH j.employer")
     List<Job> findAllWithEmployers();

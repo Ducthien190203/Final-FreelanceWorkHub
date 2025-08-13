@@ -38,11 +38,19 @@ public class JobController {
     public String listJobs(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "postedDate,desc") String sort,
             Model model) {
+
+        System.out.println("JobController.listJobs - Received parameters:");
+        System.out.println("  Keyword: " + keyword);
+        System.out.println("  Category: " + category);
+        System.out.println("  Status: " + status);
+        System.out.println("  Page: " + page);
+        System.out.println("  Size: " + size);
+        System.out.println("  Sort: " + sort);
 
         // Parse sort parameter
         Sort sortOrder = Sort.by(Sort.Direction.fromString(sort.split(",")[1]), sort.split(",")[0]);
@@ -55,16 +63,17 @@ public class JobController {
 
         // 2. Xây dựng Specification
         Specification<Job> spec = Specification.where(JobSpecification.hasKeyword(keyword))
-                                                .and(JobSpecification.isNotClosed());
+                                                .and(JobSpecification.hasStatus(status));
         if (category != null && !category.trim().isEmpty()) {
             spec = spec.and(JobSpecification.hasCategory(category));
-        }
-        if (location != null && !location.trim().isEmpty()) {
-            spec = spec.and(JobSpecification.hasLocation(location));
         }
 
         // 3. Gọi service
         Page<Job> jobPage = jobService.findAll(spec, pageable);
+
+        System.out.println("JobController.listJobs - Search results:");
+        System.out.println("  Total elements: " + jobPage.getTotalElements());
+        System.out.println("  Number of jobs on current page: " + jobPage.getContent().size());
 
         // 4. Đưa dữ liệu vào Model
         model.addAttribute("jobPage", jobPage);
@@ -74,7 +83,7 @@ public class JobController {
         // Đưa các tham số lọc vào lại model để giữ trạng thái trên form
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
-        model.addAttribute("location", location);
+        model.addAttribute("status", status);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
@@ -119,6 +128,8 @@ public class JobController {
         Job job = new Job();
         job.setTitle(jobDto.getTitle());
         job.setDescription(jobDto.getDescription());
+        job.setResponsibilities(jobDto.getResponsibilities());
+        job.setRequirements(jobDto.getRequirements());
         job.setSkills(jobDto.getSkills());
         job.setExperienceLevel(jobDto.getExperienceLevel());
         job.setLocationType(jobDto.getLocationType());

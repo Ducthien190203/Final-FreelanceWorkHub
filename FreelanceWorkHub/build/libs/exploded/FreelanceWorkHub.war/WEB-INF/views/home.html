@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Xóa bỏ hoàn toàn th:replace và thêm namespace sec trực tiếp -->
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/static/css/style.css}">
 </head>
@@ -23,115 +23,160 @@
 <!-- Body chứa cấu trúc flexbox -->
 <body class="d-flex flex-column min-vh-100">
 
-    <!-- 1. Chèn Header trực tiếp -->
-    <header th:replace="~{header :: main-header}"></header>
+<!-- 1. Chèn Header trực tiếp -->
+<header th:replace="~{header :: main-header}"></header>
 
-    <!-- 2. Main Content (Nội dung chính của trang) -->
-    <main class="flex-grow-1">
-        <!-- 1. HERO SECTION -->
-        <!-- Thêm padding top để nội dung không bị header che mất -->
-        <section class="hero-section bg-light text-center" style="padding-top: 120px; padding-bottom: 80px;">
-            <div class="container">
-                <h1 class="display-3 fw-bold">Find the right talent or your next job.</h1>
-                <p class="lead text-muted my-4">FreelanceWorkHub connects professionals and businesses simply and safely.</p>
-                <form th:action="@{/jobs/search}" method="get" class="row g-3 justify-content-center my-4">
-                    <div class="col-md-6">
-                        <input type="search" name="keyword" class="form-control form-control-lg" placeholder="Search jobs, skills, or freelancers...">
+<!-- 2. Main Content (Nội dung chính của trang) -->
+<main class="flex-grow-1">
+    <!-- 1. HERO SECTION -->
+    <!-- Thêm padding top để nội dung không bị header che mất -->
+    <section class="hero-section bg-light text-center" style="padding-top: 120px; padding-bottom: 80px;">
+        <div class="container">
+            <h1 class="display-3 fw-bold">Find the right talent or your next job.</h1>
+            <p class="lead text-muted my-4">FreelanceWorkHub connects professionals and businesses simply and
+                safely.</p>
+            <form th:action="@{/jobs/search}" method="get" class="row g-3 justify-content-center my-4">
+                <div class="col-md-6">
+                    <input type="search" name="keyword" class="form-control form-control-lg"
+                           placeholder="Search jobs, skills, or freelancers...">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                </div>
+            </form>
+            <a th:href="@{/auth/register}" class="btn btn-primary btn-lg mt-3">Get Started</a>
+        </div>
+    </section>
+
+    <!-- 2. POPULAR CATEGORIES -->
+    <section class="categories-section py-5">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">Popular Categories</h2>
+            <div class="row g-4">
+                <!-- Lặp qua dữ liệu thống kê từ backend -->
+                <div class="col-md-6 col-lg-4" th:each="stat : ${categoryStats}">
+                    <div class="card h-100 shadow-sm border-0 category-card">
+                        <div class="card-body p-4 text-center">
+                            <div class="category-icon mb-3">
+                                <!-- Bạn có thể thêm icon ở đây sau -->
+                            </div>
+                            <h5 class="card-title" th:text="${stat.categoryName}">Web Development</h5>
+                            <p class="card-text text-muted">Build websites and web applications</p>
+                            <span class="badge rounded-pill bg-secondary fw-light" th:text="${stat.jobCount} + ' jobs'">2,345 jobs</span>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        <button class="btn btn-primary btn-lg" type="submit">Search</button>
-                    </div>
-                </form>
-                <a th:href="@{/auth/register}" class="btn btn-primary btn-lg mt-3">Get Started</a>
+                </div>
             </div>
-        </section>
+            <div class="text-center mt-5">
+                <a th:href="@{/jobs}" class="btn btn-primary btn-lg">Browse More Jobs</a>
+            </div>
+        </div>
+    </section>
 
-        <!-- 2. POPULAR CATEGORIES -->
-        <section class="categories-section py-5">
-            <div class="container">
-                <h2 class="text-center fw-bold mb-5">Popular Categories</h2>
-                <div class="row g-4">
-                    <!-- Lặp qua dữ liệu thống kê từ backend -->
-                    <div class="col-md-6 col-lg-4" th:each="stat : ${categoryStats}">
-                        <div class="card h-100 shadow-sm border-0 category-card">
-                            <div class="card-body p-4 text-center">
-                                <div class="category-icon mb-3">
-                                    <!-- Bạn có thể thêm icon ở đây sau -->
+    <!-- 3. HOW IT WORKS -->
+    <section class="how-it-works-section bg-light py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-5">How It Works</h2>
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="step-circle mx-auto mb-3">01</div>
+                    <h5 class="fw-bold">Post or browse jobs</h5>
+                    <p class="text-muted">Employers post projects, freelancers browse opportunities</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-circle mx-auto mb-3">02</div>
+                    <h5 class="fw-bold">Connect and communicate</h5>
+                    <p class="text-muted">Chat with potential matches and discuss project details</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-circle mx-auto mb-3">03</div>
+                    <h5 class="fw-bold">Hire and complete work</h5>
+                    <p class="text-muted">Work together to deliver great results</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT OUR USERS SAY SECTION -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-3">What Our Users Say</h2>
+            <p class="text-muted mb-5 col-md-8 mx-auto">Don't just take our word for it. Here's what professionals and
+                businesses say about their success on FreelanceWorkHub.</p>
+            <div class="row g-4">
+                <!-- Testimonial 1: Employer -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 bg-light p-4 testimonial-card">
+                        <div class="testimonial-quote">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <div class="card-body">
+                            <p class="fst-italic">"FreelanceWorkHub helped me find the perfect developer for my startup.
+                                The process was simple, efficient, and the quality of talent exceeded my
+                                expectations."</p>
+                            <div class="d-flex align-items-center justify-content-center mt-4">
+                                <img src="https://i.pravatar.cc/60?img=1" class="rounded-circle me-3" width="60"
+                                     height="60" alt="Sarah Chen">
+                                <div>
+                                    <h6 class="fw-bold mb-0">Sarah Chen</h6>
+                                    <small class="text-muted">Startup Founder</small>
                                 </div>
-                                <h5 class="card-title" th:text="${stat.categoryName}">Web Development</h5>
-                                <p class="card-text text-muted">Build websites and web applications</p>
-                                <span class="badge rounded-pill bg-secondary fw-light" th:text="${stat.jobCount} + ' jobs'">2,345 jobs</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-5">
-                    <a th:href="@{/jobs}" class="btn btn-primary btn-lg">Browse More Jobs</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. HOW IT WORKS -->
-        <section class="how-it-works-section bg-light py-5">
-            <div class="container text-center">
-                <h2 class="fw-bold mb-5">How It Works</h2>
-                <div class="row g-5">
-                    <div class="col-md-4">
-                        <div class="step-circle mx-auto mb-3">01</div>
-                        <h5 class="fw-bold">Post or browse jobs</h5>
-                        <p class="text-muted">Employers post projects, freelancers browse opportunities</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="step-circle mx-auto mb-3">02</div>
-                        <h5 class="fw-bold">Connect and communicate</h5>
-                        <p class="text-muted">Chat with potential matches and discuss project details</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="step-circle mx-auto mb-3">03</div>
-                        <h5 class="fw-bold">Hire and complete work</h5>
-                        <p class="text-muted">Work together to deliver great results</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. TESTIMONIALS -->
-        <section class="testimonials-section py-5">
-             <div class="container text-center">
-                <h2 class="fw-bold mb-3">What Our Users Say</h2>
-                <p class="text-muted mb-5">Don't just take our word for it. Here's what professionals and businesses say about FreelanceWorkHub.</p>
-                 <div class="row g-4">
-                     <div class="col-lg-4">
-                        <div class="card h-100 border-0 bg-light">
-                            <div class="card-body p-4">
-                                <p class="fst-italic">"FreelanceWorkHub helped me find the perfect developer for my startup. The process was simple and efficient."</p>
-                                <div class="d-flex align-items-center justify-content-center mt-4">
-                                    <!-- Thay bằng ảnh thật sau -->
-                                    <img src="https://via.placeholder.com/50" class="rounded-circle me-3" width="50" height="50" alt="User Avatar">
-                                    <div>
-                                        <h6 class="fw-bold mb-0">Sarah Chen</h6>
-                                        <small class="text-muted">Startup Founder</small>
-                                    </div>
+                <!-- Testimonial 2: Freelancer -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 bg-light p-4 testimonial-card">
+                        <div class="testimonial-quote">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <div class="card-body">
+                            <p class="fst-italic">"I've been getting consistent work through this platform. The clients
+                                are professional, the payment system is reliable, and it has truly helped me build my
+                                freelance career."</p>
+                            <div class="d-flex align-items-center justify-content-center mt-4">
+                                <img src="https://i.pravatar.cc/60?img=3" class="rounded-circle me-3" width="60"
+                                     height="60" alt="Marcus Rodriguez">
+                                <div>
+                                    <h6 class="fw-bold mb-0">Marcus Rodriguez</h6>
+                                    <small class="text-muted">Freelance Designer</small>
                                 </div>
                             </div>
                         </div>
-                     </div>
-                     <div class="col-lg-4">
-                         <!-- Thêm testimonial 2 ở đây -->
-                     </div>
-                     <div class="col-lg-4">
-                         <!-- Thêm testimonial 3 ở đây -->
-                     </div>
-                 </div>
-             </div>
-        </section>
-    </main>
+                    </div>
+                </div>
+                <!-- Testimonial 3: Employer -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 bg-light p-4 testimonial-card">
+                        <div class="testimonial-quote">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <div class="card-body">
+                            <p class="fst-italic">"The quality of freelancers here is outstanding. We've built our
+                                entire remote marketing team through FreelanceWorkHub and couldn't be happier with the
+                                results."</p>
+                            <div class="d-flex align-items-center justify-content-center mt-4">
+                                <img src="https://i.pravatar.cc/60?img=5" class="rounded-circle me-3" width="60"
+                                     height="60" alt="Emma Thompson">
+                                <div>
+                                    <h6 class="fw-bold mb-0">Emma Thompson</h6>
+                                    <small class="text-muted">Agency Owner</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
-    <!-- 3. Chèn Footer trực tiếp -->
-    <footer th:replace="~{footer :: main-footer}"></footer>
+<!-- 3. Chèn Footer trực tiếp -->
+<footer th:replace="~{footer :: main-footer}"></footer>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -100,7 +100,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findByIdWithProfile(Long id) {
-        return userRepository.findByIdWithProfile(id).orElse(null);
+        User user = userRepository.findByIdWithProfile(id).orElse(null);
+        if (user != null) {
+            System.out.println("User found with ID: " + id + ", Email: " + user.getEmail());
+            if (user.getFreelancerProfile() != null) {
+                System.out.println("  Freelancer Profile Bio: " + user.getFreelancerProfile().getBio());
+                System.out.println("  Freelancer Profile Skills: " + user.getFreelancerProfile().getSkills());
+                System.out.println("  Freelancer Profile Location: " + user.getFreelancerProfile().getLocation());
+                System.out.println("  Freelancer Profile Experience Years: " + user.getFreelancerProfile().getExperienceYears());
+                System.out.println("  Freelancer Profile Availability: " + user.getFreelancerProfile().getAvailability());
+            } else {
+                System.out.println("  Freelancer Profile is NULL for user ID: " + id);
+            }
+        } else {
+            System.out.println("User not found with ID: " + id);
+        }
+        return user;
     }
 
     @Override

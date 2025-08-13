@@ -88,4 +88,9 @@ public class ApplicationServiceImpl implements IApplicationService {
         applicationRepository.save(application);
         // Job status remains unchanged for rejection
     }
+
+    @Override
+    public Application save(Application application) {
+        return applicationRepository.save(application);
+    }
 }

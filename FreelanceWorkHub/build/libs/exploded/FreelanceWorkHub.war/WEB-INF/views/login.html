@@ -26,7 +26,9 @@
     <!-- 2. Main Content (Nội dung chính của trang) -->
     <main class="container py-5 flex-grow-1">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-2"></div> <!-- New empty column for left spacing -->
+
+            <div class="col-md-4"> <!-- Main Login Form -->
                 <h2>Login</h2>
                 <div th:if="${param.error}" class="alert alert-danger" role="alert">
                     Invalid username or password.
@@ -46,15 +48,38 @@
                     </div>
                     <button class="btn btn-primary" type="submit">Login</button>
                 </form>
-
-                <form th:action="@{/perform_login}" method="post" class="mt-3">
-                    <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <input type="hidden" name="email" value="admin@example.com"/>
-                    <input type="hidden" name="password" value="adminpassword"/>
-                    <button class="btn btn-secondary" type="submit">Login as Admin (for testing)</button>
-                </form>
-
                 <p class="mt-3">Don't have an account? <a th:href="@{/auth/register}">Register</a></p>
+            </div>
+
+            <div class="col-md-4"> <!-- Demo Accounts -->
+                <div class="mt-md-0 mt-4 pt-md-0 pt-3 ps-md-4">
+                    <h5 class="mb-3">Demo Accounts</h5>
+                    <div class="d-grid gap-2">
+                        <!-- Freelancer Demo -->
+                        <form th:action="@{/perform_login}" method="post">
+                            <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="email" value="thien@gmail.com"/>
+                            <input type="hidden" name="password" value="123456"/>
+                            <button class="btn btn-sm btn-outline-info d-block" type="submit">Login as Freelancer</button>
+                        </form>
+
+                        <!-- Employer Demo -->
+                        <form th:action="@{/perform_login}" method="post">
+                            <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="email" value="google@gmail.com"/>
+                            <input type="hidden" name="password" value="123456"/>
+                            <button class="btn btn-sm btn-outline-success d-block" type="submit">Login as Employer</button>
+                        </form>
+
+                        <!-- Admin Demo -->
+                        <form th:action="@{/perform_login}" method="post">
+                            <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="email" value="admin@example.com"/>
+                            <input type="hidden" name="password" value="123456"/>
+                            <button class="btn btn-sm btn-outline-danger d-block" type="submit">Login as Admin</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

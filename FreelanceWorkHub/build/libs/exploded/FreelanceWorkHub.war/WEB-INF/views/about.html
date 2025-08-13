@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,34 +14,102 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/static/css/style.css}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <!-- 1. Chèn Header trực tiếp -->
-    <header th:replace="~{header :: main-header}"></header>
+<!-- 1. Chèn Header trực tiếp -->
+<header th:replace="~{header :: main-header}"></header>
 
-    <!-- 2. Main Content (Nội dung chính của trang) -->
-    <main class="container py-5 flex-grow-1">
-        <h1>About FreelanceWorkHub</h1>
-        <p class="lead">Our mission is to connect talent with opportunity...</p>
+<!-- 2. Main Content (Nội dung chính của trang) -->
+<main class="flex-grow-1">
+    <!-- Hero Section -->
+    <section class="bg-light py-5 text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">About FreelanceWorkHub</h1>
+            <p class="lead text-muted">Connecting talent with opportunity, empowering businesses and freelancers alike.</p>
+        </div>
+    </section>
 
-        <section class="mt-4">
-            <h3>How it works</h3>
-            <ol>
-                <li>Employers post jobs</li>
-                <li>Freelancers apply with proposals</li>
-                <li>Employers review and hire</li>
-            </ol>
-        </section>
-    </main>
+    <!-- Mission & Vision Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-bullseye display-4 text-primary mb-3"></i>
+                            <h3 class="card-title mb-3">Our Mission</h3>
+                            <p class="card-text">To create a seamless and secure platform where businesses can find the perfect talent for their projects, and freelancers can discover fulfilling work that matches their skills and aspirations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-eye display-4 text-success mb-3"></i>
+                            <h3 class="card-title mb-3">Our Vision</h3>
+                            <p class="card-text">To be the leading global marketplace for freelance work, fostering a vibrant community of professionals and driving innovation in the future of work.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- 3. Chèn Footer trực tiếp -->
-    <footer th:replace="~{footer :: main-footer}"></footer>
+    <!-- How It Works Section -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">How It Works</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-briefcase display-4 text-info mb-3"></i>
+                            <h4 class="card-title mb-3">1. Post Jobs</h4>
+                            <p class="card-text">Employers easily post their projects, detailing requirements, budget, and timeline.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-person-check display-4 text-warning mb-3"></i>
+                            <h4 class="card-title mb-3">2. Apply & Propose</h4>
+                            <p class="card-text">Freelancers browse jobs and submit compelling proposals tailored to each opportunity.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-hand-thumbs-up display-4 text-danger mb-3"></i>
+                            <h4 class="card-title mb-3">3. Hire & Collaborate</h4>
+                            <p class="card-text">Employers review applications, hire the best fit, and collaborate seamlessly through our platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Call to Action Section -->
+    <section class="py-5 text-center">
+        <div class="container">
+            <h2 class="mb-4 fw-bold">Ready to Get Started?</h2>
+            <p class="lead mb-4">Join our growing community of talented freelancers and innovative businesses today!</p>
+            <a th:href="@{/auth/register}" class="btn btn-primary btn-lg me-3">Join as a Freelancer</a>
+            <a th:href="@{/auth/register}" class="btn btn-outline-primary btn-lg">Join as an Employer</a>
+        </div>
+    </section>
+</main>
+
+<!-- 3. Chèn Footer trực tiếp -->
+<footer th:replace="~{footer :: main-footer}"></footer>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

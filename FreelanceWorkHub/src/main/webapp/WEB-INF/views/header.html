@@ -2,11 +2,12 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <header th:fragment="main-header">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid mx-4">
             <!-- 1. Logo (Bên trái) -->
             <a class="navbar-brand fw-bold" th:href="@{/}">
-                <img src="..." alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                <img src="Circle-Logo-PNG-Photo.png" alt="Logo" width="30" height="24"
+                     class="d-inline-block align-text-top">
                 FreelanceWorkHub
             </a>
 
@@ -26,31 +27,72 @@
             </div>
 
             <!-- 3. Nút hành động (Bên phải) -->
-<div class="d-flex align-items-center">
+            <div class="d-flex align-items-center" sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-link text-decoration-none text-dark me-2">Sign In</a>
+                <a th:href="@{/auth/register}" class="btn btn-primary">Get Started</a>
+            </div>
+            <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
+                <a th:if="${#authorization.expression('hasRole(''ROLE_FREELANCER'')')}"
+                   th:href="@{/freelancer/dashboard}" class="btn btn-outline-primary me-2">Dashboard</a>
+                <a th:if="${#authorization.expression('hasRole(''ROLE_EMPLOYER'')')}"
+                   th:href="@{/employer/dashboard}" class="btn btn-outline-primary me-2">Dashboard</a>
+                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                   th:href="@{/admin/dashboard}" class="btn btn-outline-primary me-2">Dashboard</a>
 
-    <a th:href="@{/login}" class="btn btn-link text-decoration-none text-dark me-2">Sign In</a>
-    <a th:href="@{/auth/register}" class="btn btn-primary">Get Started</a>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="userMenu" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span sec:authentication="name">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <!-- Admin Role -->
+                        <li sec:authorize="hasRole('ROLE_ADMIN')">
+                            <a class="dropdown-item" th:href="@{/admin/dashboard}">Dashboard</a>
+                        </li>
 
-    <div class="dropdown">
-        <a class="nav-link dropdown-toggle text-dark" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle me-1"></i>
-            <span sec:authentication="name">User</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-            <li><a class="dropdown-item" href="#">Hồ sơ của tôi</a></li>
-            <li sec:authorize="hasRole('ROLE_EMPLOYER')"><a class="dropdown-item" th:href="@{/employer/dashboard}">Employer Dashboard</a></li>
-            <li sec:authorize="hasRole('ROLE_FREELANCER')"><a class="dropdown-item" th:href="@{/freelancer/dashboard}">Freelancer Dashboard</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-                <form th:action="@{/logout}" method="post" class="d-inline">
-                    <button type="submit" class="dropdown-item">Đăng xuất</button>
-                </form>
-            </li>
-        </ul>
-    </div>
+                        <!-- Freelancer Role -->
+                        <li sec:authorize="hasRole('ROLE_FREELANCER')">
+                            <a class="dropdown-item" th:href="@{/freelancer/dashboard}">Dashboard</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_FREELANCER')">
+                            <a class="dropdown-item" th:href="@{/profile}">Profile</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_FREELANCER')">
+                            <a class="dropdown-item" th:href="@{/freelancer/applications}">My Applications</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_FREELANCER')">
+                            <a class="dropdown-item" th:href="@{/saved-jobs}">Saved Jobs</a>
+                        </li>
 
-</div>
+                        <!-- Employer Role -->
+                        <li sec:authorize="hasRole('ROLE_EMPLOYER')">
+                            <a class="dropdown-item" th:href="@{/employer/dashboard}">Dashboard</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_EMPLOYER')">
+                            <a class="dropdown-item" th:href="@{/employer/company-profile}">Profile</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_EMPLOYER')">
+                            <a class="dropdown-item" th:href="@{/jobs/create}">Post a Job</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_EMPLOYER')">
+                            <a class="dropdown-item" th:href="@{/employer/job-list}">My Posted Jobs</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_EMPLOYER')">
+                            <a class="dropdown-item" th:href="@{/employer/applicants}">Applicants</a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">Log out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
 </header>
