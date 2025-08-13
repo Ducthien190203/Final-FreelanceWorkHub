@@ -2,6 +2,7 @@ package vn.codegym.freelanceworkhub.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -85,10 +86,38 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         System.out.println("User found: " + user.getEmail() + ", Role: " + user.getRole().name()); // Added logging
         System.out.println("Stored password (encoded): " + user.getPassword()); // Added logging (CAUTION: In real app, don't log passwords)
 
+        if (user.getStatus() == User.AccountStatus.BANNED) {
+            System.out.println("User " + user.getEmail() + " is banned.");
+            throw new DisabledException("Tài khoản của bạn đã bị cấm.");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
+    }
+
+    @Override
+    public User findByIdWithProfile(Long id) {
+        return userRepository.findByIdWithProfile(id).orElse(null);
+    }
+
+    @Override
+    public void banUser(Long id) {
+        User user = findById(id);
+        if (user != null) {
+            user.setStatus(User.AccountStatus.BANNED);
+            userRepository.save(user);
+        }
+    }
+
+    @Override
+    public void unbanUser(Long id) {
+        User user = findById(id);
+        if (user != null) {
+            user.setStatus(User.AccountStatus.ACTIVE);
+            userRepository.save(user);
+        }
     }
 }

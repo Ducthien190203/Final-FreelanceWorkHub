@@ -51,4 +51,10 @@ public class JobSpecification {
             return criteriaBuilder.notEqual(root.get("status"), Job.JobStatus.CLOSED);
         };
     }
+
+    public static Specification<Job> isPending() {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.get("status"), Job.JobStatus.PENDING);
+        };
+    }
 }

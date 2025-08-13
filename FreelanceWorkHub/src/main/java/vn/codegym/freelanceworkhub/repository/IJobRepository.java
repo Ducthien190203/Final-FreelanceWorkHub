@@ -39,6 +39,9 @@ public interface IJobRepository extends JpaRepository<Job, Long>, JpaSpecificati
 
     @Query("SELECT j FROM Job j JOIN FETCH j.employer WHERE j.id = :id")
     Optional<Job> findByIdWithEmployer(@Param("id") Long id);
+
+    @Query("SELECT j FROM Job j JOIN FETCH j.employer")
+    List<Job> findAllWithEmployers();
 }
 
     

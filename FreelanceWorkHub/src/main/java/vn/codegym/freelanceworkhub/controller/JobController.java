@@ -47,6 +47,9 @@ public class JobController {
         // Parse sort parameter
         Sort sortOrder = Sort.by(Sort.Direction.fromString(sort.split(",")[1]), sort.split(",")[0]);
         
+        // Add custom sort to push CLOSED jobs to the end
+        sortOrder = sortOrder.and(Sort.by("status").ascending()); // PENDING, APPROVED, CLOSED
+
         // 1. Tạo Pageable
         Pageable pageable = PageRequest.of(page, size, sortOrder);
 
@@ -64,12 +67,6 @@ public class JobController {
         Page<Job> jobPage = jobService.findAll(spec, pageable);
 
         // 4. Đưa dữ liệu vào Model
-        // Manually initialize employer to avoid LazyInitializationException
-        for (Job job : jobPage.getContent()) {
-            if (job.getEmployer() != null) {
-                job.getEmployer().getName(); // Access a property to initialize the proxy
-            }
-        }
         model.addAttribute("jobPage", jobPage);
         model.addAttribute("jobs", jobPage.getContent()); // For existing th:each="job : ${jobs}"
         model.addAttribute("categories", jobCategoryService.findAll()); // Needed for filter form
@@ -100,15 +97,6 @@ public class JobController {
         model.addAttribute("job", new JobDto());
         model.addAttribute("categories", jobCategoryService.findAll());
         return "jobs/create";
-    }
-
-    
-
-    @GetMapping("/post-job")
-    public String showPostJobForm(Model model) {
-        model.addAttribute("job", new Job());
-        model.addAttribute("categories", jobCategoryService.findAll()); // Assuming categories are needed for the form
-        return "post-job";
     }
 
     @PostMapping("/create")

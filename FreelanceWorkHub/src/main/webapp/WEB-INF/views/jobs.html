@@ -62,7 +62,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2>Browse Jobs</h2>
                     <span class="text-muted" th:text="${jobPage.totalElements} + ' jobs found'"></span>
-                    <a class="btn btn-outline-primary" th:href="@{/post-job}"
+                    <a class="btn btn-outline-primary" th:href="@{/jobs/create}"
                        sec:authorize="hasRole('EMPLOYER')">Post a Job</a>
                 </div>
 
@@ -76,6 +76,7 @@
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <a th:href="@{'/jobs/' + ${job.id}}" th:text="${job.title}"></a>
+                                    <span th:classappend="${job.status.name() == 'PENDING' ? 'badge bg-success' : (job.status.name() == 'CLOSED' ? 'badge bg-danger' : 'badge bg-secondary')}" th:text="${job.status}"></span>
                                 </h5>
                                 <small class="text-muted" th:text="${#dates.format(job.postedDate,'dd/MM/yyyy')}"></small>
                             </div>

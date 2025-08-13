@@ -34,7 +34,9 @@
                             <a th:href="@{/jobs/${app.job.id}}" th:text="${app.job.title}"></a>
                             <div class="text-muted small" th:text="${#dates.format(app.createdAt,'dd/MM/yyyy')}"></div>
                         </div>
-                        <div><span class="badge bg-secondary" th:text="${app.status}"></span></div>
+                        <div>
+                            <span th:classappend="${app.status.name() == 'PENDING' ? 'badge bg-warning' : (app.status.name() == 'ACCEPTED' ? 'badge bg-success' : 'badge bg-danger')}" th:text="${app.status}"></span>
+                        </div>
                     </div>
                 </li>
             </ul>

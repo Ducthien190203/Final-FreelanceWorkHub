@@ -30,14 +30,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="application : ${allApplications}">
-                        <td th:text="${application.job.title}"></td>
-                        <td th:text="${application.freelancer.name}"></td>
-                        <td th:text="${application.status}"></td>
-                        <td th:text="${#dates.format(application.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                    <tr th:each="app : ${allApplications}">
+                        <td th:text="${app.job.title}"></td>
+                        <td th:text="${app.freelancer.name}"></td>
                         <td>
-                            <a th:href="@{'/applicant-detail/' + ${application.id}}" class="btn btn-info btn-sm">View Details</a>
-                            <!-- Add buttons for approving/rejecting applications later -->
+                            <span th:classappend="${app.status.name() == 'PENDING' ? 'badge bg-warning' : (app.status.name() == 'ACCEPTED' ? 'badge bg-success' : 'badge bg-danger')}" th:text="${app.status}"></span>
+                        </td>
+                        <td th:text="${#dates.format(app.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td>
+                            <a th:href="@{'/employer/applicant-detail/' + ${app.freelancer.id}}" class="btn btn-info btn-sm">View Details</a>
+                            <th:block th:if="${app.status.name() == 'PENDING'}">
+                                <form th:action="@{'/employer/applications/accept'}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to accept this application? This will close the job.');">
+                                    <input type="hidden" name="applicationId" th:value="${app.id}" />
+                                    <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                </form>
+                                <form th:action="@{'/employer/applications/reject'}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to reject this application?');">
+                                    <input type="hidden" name="applicationId" th:value="${app.id}" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </th:block>
+                            <th:block th:unless="${app.status.name() == 'PENDING'}">
+                                <span th:classappend="${app.status.name() == 'ACCEPTED' ? 'badge bg-success' : (app.status.name() == 'REJECTED' ? 'badge bg-danger' : 'badge bg-secondary')}" th:text="${app.status}"></span>
+                            </th:block>
                         </td>
                     </tr>
                 </tbody>

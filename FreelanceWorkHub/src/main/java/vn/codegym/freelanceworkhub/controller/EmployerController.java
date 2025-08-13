@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.codegym.freelanceworkhub.dto.EmployerProfileDto;
 import vn.codegym.freelanceworkhub.model.EmployerProfile;
 import vn.codegym.freelanceworkhub.model.User;
@@ -109,5 +111,38 @@ public class EmployerController {
         List<Application> allApplications = applicationService.findAllByEmployerId(user.getId());
         model.addAttribute("allApplications", allApplications);
         return "employer-applicants";
+    }
+
+    @GetMapping("/applicant-detail/{id}")
+    public String showApplicantDetail(@PathVariable("id") Long id, Model model) {
+        User applicant = userService.findByIdWithProfile(id);
+        if (applicant == null) {
+            // Handle not found, maybe redirect to an error page or show a message
+            return "redirect:/error";
+        }
+        model.addAttribute("applicant", applicant);
+        return "applicant-detail";
+    }
+
+    @PostMapping("/applications/accept")
+    public String acceptApplication(@RequestParam("applicationId") Long applicationId, RedirectAttributes redirectAttributes) {
+        try {
+            applicationService.acceptApplication(applicationId);
+            redirectAttributes.addFlashAttribute("success", "Application accepted and job closed successfully!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/employer/applicants";
+    }
+
+    @PostMapping("/applications/reject")
+    public String rejectApplication(@RequestParam("applicationId") Long applicationId, RedirectAttributes redirectAttributes) {
+        try {
+            applicationService.rejectApplication(applicationId);
+            redirectAttributes.addFlashAttribute("success", "Application rejected successfully!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/employer/applicants";
     }
 }

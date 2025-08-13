@@ -13,4 +13,7 @@ public interface IApplicationService {
     List<Application> findByFreelancerWithJobAndUser(Long freelancerId);
 
     List<Application> findAllByEmployerId(Long employerId);
+
+    void acceptApplication(Long applicationId);
+    void rejectApplication(Long applicationId);
 }

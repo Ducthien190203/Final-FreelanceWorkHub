@@ -28,6 +28,12 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2>Login</h2>
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    Invalid username or password.
+                </div>
+                <div th:if="${param.error}" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="alert alert-danger" role="alert">
+                    <!-- This will display the specific exception message, e.g., "Tài khoản của bạn đã bị cấm." -->
+                </div>
                 <form th:action="@{/perform_login}" method="post">
                     <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="mb-3">
@@ -39,6 +45,13 @@
                         <input id="password" name="password" type="password" class="form-control" required/>
                     </div>
                     <button class="btn btn-primary" type="submit">Login</button>
+                </form>
+
+                <form th:action="@{/perform_login}" method="post" class="mt-3">
+                    <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="email" value="admin@example.com"/>
+                    <input type="hidden" name="password" value="adminpassword"/>
+                    <button class="btn btn-secondary" type="submit">Login as Admin (for testing)</button>
                 </form>
 
                 <p class="mt-3">Don't have an account? <a th:href="@{/auth/register}">Register</a></p>

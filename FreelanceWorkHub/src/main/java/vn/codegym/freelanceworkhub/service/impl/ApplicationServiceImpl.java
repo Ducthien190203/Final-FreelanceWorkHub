@@ -55,4 +55,37 @@ public class ApplicationServiceImpl implements IApplicationService {
     public List<Application> findAllByEmployerId(Long employerId) {
         return applicationRepository.findAllByEmployerIdWithJobAndFreelancer(employerId);
     }
+
+    @Override
+    public void acceptApplication(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        application.setStatus(Application.ApplicationStatus.ACCEPTED);
+        applicationRepository.save(application);
+
+        // Close the job if an application is accepted
+        Job job = application.getJob();
+        job.setStatus(Job.JobStatus.CLOSED);
+        jobRepository.save(job);
+
+        // Reject other pending applications for the same job
+        List<Application> otherPendingApplications = applicationRepository.findByJobAndStatusAndIdNot(
+                job, Application.ApplicationStatus.PENDING, application.getId());
+
+        for (Application otherApp : otherPendingApplications) {
+            otherApp.setStatus(Application.ApplicationStatus.REJECTED);
+            applicationRepository.save(otherApp);
+        }
+    }
+
+    @Override
+    public void rejectApplication(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        application.setStatus(Application.ApplicationStatus.REJECTED);
+        applicationRepository.save(application);
+        // Job status remains unchanged for rejection
+    }
 }

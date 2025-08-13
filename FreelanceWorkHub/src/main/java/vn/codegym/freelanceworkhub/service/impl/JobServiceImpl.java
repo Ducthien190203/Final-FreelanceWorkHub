@@ -43,7 +43,7 @@ public class JobServiceImpl implements IJobService {
 
     @Override
     public List<Job> findAll() {
-        return jobRepository.findAll();
+        return jobRepository.findAllWithEmployers();
     }
 
     @Override

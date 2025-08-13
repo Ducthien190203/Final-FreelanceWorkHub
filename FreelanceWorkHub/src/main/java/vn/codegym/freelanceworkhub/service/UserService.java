@@ -17,4 +17,8 @@ public interface UserService {
     void deleteById(Long id);
 
     User save(User user);
+
+    User findByIdWithProfile(Long id);
+    void banUser(Long id);
+    void unbanUser(Long id);
 }

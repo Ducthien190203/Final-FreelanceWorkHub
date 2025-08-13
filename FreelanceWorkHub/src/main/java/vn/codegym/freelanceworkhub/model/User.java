@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import vn.codegym.freelanceworkhub.model.FreelancerProfile;
 
 @Data
 @NoArgsConstructor
@@ -46,6 +47,9 @@ public class User {
 
     @Column(name = "avatar_url")
     private String avatarUrl;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    private FreelancerProfile freelancerProfile;
 
     public enum Role {
         FREELANCER,

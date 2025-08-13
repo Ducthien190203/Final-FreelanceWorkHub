@@ -20,10 +20,10 @@
                 <p><strong>Skills:</strong> <span th:text="${job.skills}">Skills Required</span></p>
                 <p><strong>Experience Level:</strong> <span th:text="${job.experienceLevel}">Experience Level</span></p>
                 <p><strong>Location Type:</strong> <span th:text="${job.locationType}">Location Type</span></p>
-                <p><strong>Location Address:</strong> <span th:text="${job.locationAddress}">Location Address</span></p>
+                <p th:if="${job.locationType != 'REMOTE'}"><strong>Location Address:</strong> <span th:text="${job.locationAddress}">Location Address</span></p>
                 <p><strong>Payment Type:</strong> <span th:text="${job.paymentType}">Payment Type</span></p>
-                <p><strong>Min Rate:</strong> <span th:text="${job.minRate}">Min Rate</span></p>
-                <p><strong>Max Rate:</strong> <span th:text="${job.maxRate}">Max Rate</span></p>
+                <p th:if="${job.paymentType != 'FIXED'}"><strong>Min Rate:</strong> <span th:text="${job.minRate}">Min Rate</span></p>
+                <p th:if="${job.paymentType != 'FIXED'}"><strong>Max Rate:</strong> <span th:text="${job.maxRate}">Max Rate</span></p>
                 <p><strong>Posted Date:</strong> <span th:text="${#dates.format(job.postedDate, 'dd-MM-yyyy HH:mm')}">Posted Date</span></p>
                 <p><strong>Status:</strong> <span th:text="${job.status}">Status</span></p>
 

@@ -23,4 +23,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     @Query("SELECT a FROM Application a JOIN FETCH a.job j JOIN FETCH a.freelancer f WHERE j.employer.id = :employerId")
     List<Application> findAllByEmployerIdWithJobAndFreelancer(@Param("employerId") Long employerId);
+
+    List<Application> findByJobAndStatusAndIdNot(Job job, Application.ApplicationStatus status, Long id);
 }
